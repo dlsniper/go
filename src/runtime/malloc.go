@@ -430,9 +430,9 @@ func (h *mheap) sysAlloc(n uintptr) unsafe.Pointer {
 		h.mapBits(p + n)
 		h.mapSpans(p + n)
 		h.arena_used = p + n
-		if raceenabled {
+		/*if raceenabled {
 			racemapshadow(unsafe.Pointer(p), n)
-		}
+		}*/
 
 		if uintptr(p)&(_PageSize-1) != 0 {
 			throw("misrounded allocation in MHeap_SysAlloc")
@@ -473,9 +473,9 @@ func (h *mheap) sysAlloc(n uintptr) unsafe.Pointer {
 		if p_end > h.arena_end {
 			h.arena_end = p_end
 		}
-		if raceenabled {
+		/*if raceenabled {
 			racemapshadow(unsafe.Pointer(p), n)
-		}
+		}*/
 	}
 
 	if uintptr(p)&(_PageSize-1) != 0 {
@@ -710,12 +710,12 @@ func mallocgc(size uintptr, typ *_type, flags uint32) unsafe.Pointer {
 		})
 	}
 
-	if raceenabled {
+	/*if raceenabled {
 		racemalloc(x, size)
-	}
-	if msanenabled {
+	}*/
+	/*if msanenabled {
 		msanmalloc(x, size)
-	}
+	}*/
 
 	mp.mallocing = 0
 	releasem(mp)

@@ -159,9 +159,9 @@ func runfinq() {
 			continue
 		}
 		unlock(&finlock)
-		if raceenabled {
+		/*if raceenabled {
 			racefingo()
-		}
+		}*/
 		for fb != nil {
 			for i := fb.cnt; i > 0; i-- {
 				f := &fb.fin[i-1]

@@ -6,7 +6,7 @@
 
 package runtime
 
-import "unsafe"
+import _ "unsafe"
 
 // Package time knows the layout of this structure.
 // If this struct changes, adjust ../time/sleep.go:/runtimeTimer.
@@ -62,9 +62,9 @@ func timeSleep(ns int64) {
 // startTimer adds t to the timer heap.
 //go:linkname startTimer time.startTimer
 func startTimer(t *timer) {
-	if raceenabled {
+	/*if raceenabled {
 		racerelease(unsafe.Pointer(t))
-	}
+	}*/
 	addtimer(t)
 }
 
@@ -190,9 +190,9 @@ func timerproc() {
 			arg := t.arg
 			seq := t.seq
 			unlock(&timers.lock)
-			if raceenabled {
+			/*if raceenabled {
 				raceacquire(unsafe.Pointer(t))
-			}
+			}*/
 			f(arg, seq)
 			lock(&timers.lock)
 		}

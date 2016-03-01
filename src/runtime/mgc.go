@@ -713,9 +713,9 @@ func (c *gcControllerState) findRunnableGCWorker(_p_ *p) *g {
 	// Run the background mark worker
 	gp := _p_.gcBgMarkWorker.ptr()
 	casgstatus(gp, _Gwaiting, _Grunnable)
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGoUnpark(gp, 0)
-	}
+	}*/
 	return gp
 }
 
@@ -925,9 +925,9 @@ func gcStart(mode gcMode, forceTrigger bool) {
 	// Ok, we're doing it!  Stop everybody else
 	semacquire(&worldsema, false)
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGCStart()
-	}
+	}*/
 
 	if mode == gcBackgroundMode {
 		gcBgMarkStartWorkers()
@@ -1217,9 +1217,9 @@ func gcMarkTermination() {
 	_g_.m.traceback = 0
 	casgstatus(gp, _Gwaiting, _Grunning)
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGCDone()
-	}
+	}*/
 
 	// all done
 	mp.preemptoff = ""
@@ -1544,9 +1544,9 @@ func gcMark(start_time int64) {
 	work.ndone = 0
 	work.nproc = uint32(gcprocs())
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGCScanStart()
-	}
+	}*/
 
 	if work.nproc > 1 {
 		noteclear(&work.alldone)
@@ -1578,9 +1578,9 @@ func gcMark(start_time int64) {
 		}
 	}
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGCScanDone()
-	}
+	}*/
 
 	cachestats()
 
@@ -1641,10 +1641,10 @@ func gcMark(start_time int64) {
 		memstats.next_gc = minNextGC
 	}
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceHeapAlloc()
 		traceNextGC()
-	}
+	}*/
 }
 
 func gcSweep(mode gcMode) {
@@ -1792,9 +1792,9 @@ func gchelper() {
 	_g_.m.traceback = 2
 	gchelperstart()
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGCScanStart()
-	}
+	}*/
 
 	// Parallel mark over GC roots and heap
 	if gcphase == _GCmarktermination {
@@ -1803,9 +1803,9 @@ func gchelper() {
 		gcw.dispose()
 	}
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGCScanDone()
-	}
+	}*/
 
 	nproc := work.nproc // work.nproc can change right after we increment work.ndone
 	if atomic.Xadd(&work.ndone, +1) == nproc-1 {

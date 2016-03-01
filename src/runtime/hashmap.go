@@ -273,15 +273,15 @@ func makemap(t *maptype, hint int64, h *hmap, bucket unsafe.Pointer) *hmap {
 // NOTE: The returned pointer may keep the whole map live, so don't
 // hold onto it for very long.
 func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
-	if raceenabled && h != nil {
+	/*if raceenabled && h != nil {
 		callerpc := getcallerpc(unsafe.Pointer(&t))
 		pc := funcPC(mapaccess1)
 		racereadpc(unsafe.Pointer(h), callerpc, pc)
 		raceReadObjectPC(t.key, key, callerpc, pc)
-	}
-	if msanenabled && h != nil {
+	}*/
+	/*if msanenabled && h != nil {
 		msanread(key, t.key.size)
-	}
+	}*/
 	if h == nil || h.count == 0 {
 		return atomic.Loadp(unsafe.Pointer(&zeroptr))
 	}
@@ -327,15 +327,15 @@ func mapaccess1(t *maptype, h *hmap, key unsafe.Pointer) unsafe.Pointer {
 }
 
 func mapaccess2(t *maptype, h *hmap, key unsafe.Pointer) (unsafe.Pointer, bool) {
-	if raceenabled && h != nil {
+	/*if raceenabled && h != nil {
 		callerpc := getcallerpc(unsafe.Pointer(&t))
 		pc := funcPC(mapaccess2)
 		racereadpc(unsafe.Pointer(h), callerpc, pc)
 		raceReadObjectPC(t.key, key, callerpc, pc)
-	}
-	if msanenabled && h != nil {
+	}*/
+	/*if msanenabled && h != nil {
 		msanread(key, t.key.size)
-	}
+	}*/
 	if h == nil || h.count == 0 {
 		return atomic.Loadp(unsafe.Pointer(&zeroptr)), false
 	}
@@ -430,17 +430,17 @@ func mapassign1(t *maptype, h *hmap, key unsafe.Pointer, val unsafe.Pointer) {
 	if h == nil {
 		panic("assignment to entry in nil map")
 	}
-	if raceenabled {
+	/*if raceenabled {
 		callerpc := getcallerpc(unsafe.Pointer(&t))
 		pc := funcPC(mapassign1)
 		racewritepc(unsafe.Pointer(h), callerpc, pc)
 		raceReadObjectPC(t.key, key, callerpc, pc)
 		raceReadObjectPC(t.elem, val, callerpc, pc)
-	}
-	if msanenabled {
+	}*/
+	/*if msanenabled {
 		msanread(key, t.key.size)
 		msanread(val, t.elem.size)
-	}
+	}*/
 	if h.flags&hashWriting != 0 {
 		throw("concurrent map writes")
 	}
@@ -543,15 +543,15 @@ done:
 }
 
 func mapdelete(t *maptype, h *hmap, key unsafe.Pointer) {
-	if raceenabled && h != nil {
+	/*if raceenabled && h != nil {
 		callerpc := getcallerpc(unsafe.Pointer(&t))
 		pc := funcPC(mapdelete)
 		racewritepc(unsafe.Pointer(h), callerpc, pc)
 		raceReadObjectPC(t.key, key, callerpc, pc)
-	}
-	if msanenabled && h != nil {
+	}*/
+	/*if msanenabled && h != nil {
 		msanread(key, t.key.size)
-	}
+	}*/
 	if h == nil || h.count == 0 {
 		return
 	}
@@ -615,10 +615,10 @@ func mapiterinit(t *maptype, h *hmap, it *hiter) {
 	it.overflow[0] = nil
 	it.overflow[1] = nil
 
-	if raceenabled && h != nil {
+	/*if raceenabled && h != nil {
 		callerpc := getcallerpc(unsafe.Pointer(&t))
 		racereadpc(unsafe.Pointer(h), callerpc, funcPC(mapiterinit))
-	}
+	}*/
 
 	if h == nil || h.count == 0 {
 		it.key = nil
@@ -668,10 +668,10 @@ func mapiterinit(t *maptype, h *hmap, it *hiter) {
 
 func mapiternext(it *hiter) {
 	h := it.h
-	if raceenabled {
+	/*if raceenabled {
 		callerpc := getcallerpc(unsafe.Pointer(&it))
 		racereadpc(unsafe.Pointer(h), callerpc, funcPC(mapiternext))
-	}
+	}*/
 	t := it.t
 	bucket := it.bucket
 	b := it.bptr
@@ -1030,10 +1030,10 @@ func reflect_maplen(h *hmap) int {
 	if h == nil {
 		return 0
 	}
-	if raceenabled {
+	/*if raceenabled {
 		callerpc := getcallerpc(unsafe.Pointer(&h))
 		racereadpc(unsafe.Pointer(h), callerpc, funcPC(reflect_maplen))
-	}
+	}*/
 	return h.count
 }
 

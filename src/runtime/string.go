@@ -81,15 +81,15 @@ func slicebytetostring(buf *tmpBuf, b []byte) string {
 		// you find the indices and convert the subslice to string.
 		return ""
 	}
-	if raceenabled && l > 0 {
+	/*if raceenabled && l > 0 {
 		racereadrangepc(unsafe.Pointer(&b[0]),
 			uintptr(l),
 			getcallerpc(unsafe.Pointer(&buf)),
 			funcPC(slicebytetostring))
-	}
-	if msanenabled && l > 0 {
+	}*/
+	/*if msanenabled && l > 0 {
 		msanread(unsafe.Pointer(&b[0]), uintptr(l))
-	}
+	}*/
 	s, c := rawstringtmp(buf, l)
 	copy(c, b)
 	return s
@@ -124,15 +124,15 @@ func slicebytetostringtmp(b []byte) string {
 	// Second such case is "<"+string(b)+">" concatenation where b is []byte.
 	// Third such case is string(b)=="foo" comparison where b is []byte.
 
-	if raceenabled && len(b) > 0 {
+	/*if raceenabled && len(b) > 0 {
 		racereadrangepc(unsafe.Pointer(&b[0]),
 			uintptr(len(b)),
 			getcallerpc(unsafe.Pointer(&b)),
 			funcPC(slicebytetostringtmp))
-	}
-	if msanenabled && len(b) > 0 {
+	}*/
+	/*if msanenabled && len(b) > 0 {
 		msanread(unsafe.Pointer(&b[0]), uintptr(len(b)))
-	}
+	}*/
 	return *(*string)(unsafe.Pointer(&b))
 }
 
@@ -186,15 +186,15 @@ func stringtoslicerune(buf *[tmpStringBufSize]rune, s string) []rune {
 }
 
 func slicerunetostring(buf *tmpBuf, a []rune) string {
-	if raceenabled && len(a) > 0 {
+	/*if raceenabled && len(a) > 0 {
 		racereadrangepc(unsafe.Pointer(&a[0]),
 			uintptr(len(a))*unsafe.Sizeof(a[0]),
 			getcallerpc(unsafe.Pointer(&buf)),
 			funcPC(slicerunetostring))
-	}
-	if msanenabled && len(a) > 0 {
+	}*/
+	/*if msanenabled && len(a) > 0 {
 		msanread(unsafe.Pointer(&a[0]), uintptr(len(a))*unsafe.Sizeof(a[0]))
-	}
+	}*/
 	var dum [4]byte
 	size1 := 0
 	for _, r := range a {

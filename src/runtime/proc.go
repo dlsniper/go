@@ -186,9 +186,9 @@ func main() {
 		return
 	}
 	main_main()
-	if raceenabled {
+	/*if raceenabled {
 		racefini()
-	}
+	}*/
 
 	// Make racy client program work: if panicking on
 	// another goroutine at the same time as main returns,
@@ -208,9 +208,9 @@ func main() {
 // os_beforeExit is called from os.Exit(0).
 //go:linkname os_beforeExit os.runtime_beforeExit
 func os_beforeExit() {
-	if raceenabled {
+	/*if raceenabled {
 		racefini()
-	}
+	}*/
 }
 
 // start forcegc helper goroutine
@@ -418,9 +418,9 @@ func schedinit() {
 	// raceinit must be the first call to race detector.
 	// In particular, it must be done before mallocinit below calls racemapshadow.
 	_g_ := getg()
-	if raceenabled {
+	/*if raceenabled {
 		_g_.racectx = raceinit()
-	}
+	}*/
 
 	sched.maxmcount = 10000
 
@@ -508,9 +508,9 @@ func mcommoninit(mp *m) {
 
 // Mark gp ready to run.
 func ready(gp *g, traceskip int) {
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGoUnpark(gp, traceskip)
-	}
+	}*/
 
 	status := readgstatus(gp)
 
@@ -915,10 +915,10 @@ func stopTheWorldWithSema() {
 		p := allp[i]
 		s := p.status
 		if s == _Psyscall && atomic.Cas(&p.status, s, _Pgcstop) {
-			if trace.enabled {
+			/*if trace.enabled {
 				traceGoSysBlock(p)
 				traceProcStop(p)
-			}
+			}*/
 			p.syscalltick++
 			sched.stopwait--
 		}
@@ -1142,10 +1142,10 @@ func forEachP(fn func(*p)) {
 		p := allp[i]
 		s := p.status
 		if s == _Psyscall && p.runSafePointFn == 1 && atomic.Cas(&p.status, s, _Pidle) {
-			if trace.enabled {
+			/*if trace.enabled {
 				traceGoSysBlock(p)
 				traceProcStop(p)
-			}
+			}*/
 			p.syscalltick++
 			handoffp(p)
 		}
@@ -1369,9 +1369,9 @@ func newextram() {
 	mp.lockedg = gp
 	gp.lockedm = mp
 	gp.goid = int64(atomic.Xadd64(&sched.goidgen, 1))
-	if raceenabled {
+	/*if raceenabled {
 		gp.racectx = racegostart(funcPC(newextram))
-	}
+	}*/
 	// put on allg for garbage collector
 	allgadd(gp)
 
@@ -1486,9 +1486,9 @@ func newm(fn func(), _p_ *p) {
 		ts.g.set(mp.g0)
 		ts.tls = (*uint64)(unsafe.Pointer(&mp.tls[0]))
 		ts.fn = unsafe.Pointer(funcPC(mstart))
-		if msanenabled {
+		/*if msanenabled {
 			msanwrite(unsafe.Pointer(&ts), unsafe.Sizeof(ts))
-		}
+		}*/
 		asmcgocall(_cgo_thread_start, unsafe.Pointer(&ts))
 		return
 	}
@@ -1744,7 +1744,7 @@ func execute(gp *g, inheritTime bool) {
 		resetcpuprofiler(hz)
 	}
 
-	if trace.enabled {
+	/*if trace.enabled {
 		// GoSysExit has to happen when we have a P, but before GoStart.
 		// So we emit it here.
 		if gp.syscallsp != 0 && gp.sysblocktraced {
@@ -1767,7 +1767,7 @@ func execute(gp *g, inheritTime bool) {
 			traceGoSysExit(seq, ts)
 		}
 		traceGoStart()
-	}
+	}*/
 
 	gogo(&gp.sched)
 }
@@ -1821,9 +1821,9 @@ top:
 			// netpoll returns list of goroutines linked by schedlink.
 			injectglist(gp.schedlink.ptr())
 			casgstatus(gp, _Gwaiting, _Grunnable)
-			if trace.enabled {
+			/*if trace.enabled {
 				traceGoUnpark(gp, 0)
-			}
+			}*/
 			return gp, false
 		}
 	}
@@ -1865,9 +1865,9 @@ stop:
 		_p_.gcMarkWorkerMode = gcMarkWorkerIdleMode
 		gp := _p_.gcBgMarkWorker.ptr()
 		casgstatus(gp, _Gwaiting, _Grunnable)
-		if trace.enabled {
+		/*if trace.enabled {
 			traceGoUnpark(gp, 0)
-		}
+		}*/
 		return gp, false
 	}
 
@@ -1944,9 +1944,9 @@ stop:
 				acquirep(_p_)
 				injectglist(gp.schedlink.ptr())
 				casgstatus(gp, _Gwaiting, _Grunnable)
-				if trace.enabled {
+				/*if trace.enabled {
 					traceGoUnpark(gp, 0)
-				}
+				}*/
 				return gp, false
 			}
 			injectglist(gp)
@@ -1980,11 +1980,11 @@ func injectglist(glist *g) {
 	if glist == nil {
 		return
 	}
-	if trace.enabled {
+	/*if trace.enabled {
 		for gp := glist; gp != nil; gp = gp.schedlink.ptr() {
 			traceGoUnpark(gp, 0)
 		}
-	}
+	}*/
 	lock(&sched.lock)
 	var n int
 	for n = 0; glist != nil; n++ {
@@ -2024,13 +2024,13 @@ top:
 
 	var gp *g
 	var inheritTime bool
-	if trace.enabled || trace.shutdown {
+	/*if trace.enabled || trace.shutdown {
 		gp = traceReader()
 		if gp != nil {
 			casgstatus(gp, _Gwaiting, _Grunnable)
 			traceGoUnpark(gp, 0)
 		}
-	}
+	}*/
 	if gp == nil && gcBlackenEnabled != 0 {
 		gp = gcController.findRunnableGCWorker(_g_.m.p.ptr())
 	}
@@ -2094,9 +2094,9 @@ func parkunlock_c(gp *g, lock unsafe.Pointer) bool {
 func park_m(gp *g) {
 	_g_ := getg()
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGoPark(_g_.m.waittraceev, _g_.m.waittraceskip, gp)
-	}
+	}*/
 
 	casgstatus(gp, _Grunning, _Gwaiting)
 	dropg()
@@ -2107,9 +2107,9 @@ func park_m(gp *g) {
 		_g_.m.waitunlockf = nil
 		_g_.m.waitlock = nil
 		if !ok {
-			if trace.enabled {
+			/*if trace.enabled {
 				traceGoUnpark(gp, 2)
-			}
+			}*/
 			casgstatus(gp, _Gwaiting, _Grunnable)
 			execute(gp, true) // Schedule it back, never returns.
 		}
@@ -2134,27 +2134,27 @@ func goschedImpl(gp *g) {
 
 // Gosched continuation on g0.
 func gosched_m(gp *g) {
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGoSched()
-	}
+	}*/
 	goschedImpl(gp)
 }
 
 func gopreempt_m(gp *g) {
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGoPreempt()
-	}
+	}*/
 	goschedImpl(gp)
 }
 
 // Finishes execution of the current goroutine.
 func goexit1() {
-	if raceenabled {
+	/*if raceenabled {
 		racegoend()
-	}
-	if trace.enabled {
+	}*/
+	/*if trace.enabled {
 		traceGoEnd()
-	}
+	}*/
 	mcall(goexit0)
 }
 
@@ -2263,13 +2263,13 @@ func reentersyscall(pc, sp uintptr) {
 		})
 	}
 
-	if trace.enabled {
+	/*if trace.enabled {
 		systemstack(traceGoSysCall)
 		// systemstack itself clobbers g.sched.{pc,sp} and we might
 		// need them later when the G is genuinely blocked in a
 		// syscall
 		save(pc, sp)
-	}
+	}*/
 
 	if atomic.Load(&sched.sysmonwait) != 0 { // TODO: fast atomic
 		systemstack(entersyscall_sysmon)
@@ -2320,10 +2320,10 @@ func entersyscall_gcwait() {
 
 	lock(&sched.lock)
 	if sched.stopwait > 0 && atomic.Cas(&_p_.status, _Psyscall, _Pgcstop) {
-		if trace.enabled {
+		/*if trace.enabled {
 			traceGoSysBlock(_p_)
 			traceProcStop(_p_)
-		}
+		}*/
 		_p_.syscalltick++
 		if sched.stopwait--; sched.stopwait == 0 {
 			notewakeup(&sched.stopnote)
@@ -2376,10 +2376,10 @@ func entersyscallblock(dummy int32) {
 }
 
 func entersyscallblock_handoff() {
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGoSysCall()
 		traceGoSysBlock(getg().m.p.ptr())
-	}
+	}*/
 	handoffp(releasep())
 }
 
@@ -2397,16 +2397,16 @@ func exitsyscall(dummy int32) {
 	}
 
 	_g_.waitsince = 0
-	oldp := _g_.m.p.ptr()
+	//oldp := _g_.m.p.ptr()
 	if exitsyscallfast() {
 		if _g_.m.mcache == nil {
 			throw("lost mcache")
 		}
-		if trace.enabled {
+		/*if trace.enabled {
 			if oldp != _g_.m.p.ptr() || _g_.m.syscalltick != _g_.m.p.ptr().syscalltick {
 				systemstack(traceGoStart)
 			}
-		}
+		}*/
 		// There's a cpu for us, so we can run.
 		_g_.m.p.ptr().syscalltick++
 		// We need to cas the status and scan before resuming...
@@ -2429,7 +2429,7 @@ func exitsyscall(dummy int32) {
 
 	_g_.sysexitticks = 0
 	_g_.sysexitseq = 0
-	if trace.enabled {
+	/*if trace.enabled {
 		// Wait till traceGoSysBlock event is emitted.
 		// This ensures consistency of the trace (the goroutine is started after it is blocked).
 		for oldp != nil && oldp.syscalltick == _g_.m.syscalltick {
@@ -2440,7 +2440,7 @@ func exitsyscall(dummy int32) {
 		// So instead we remember the syscall exit time and emit the event
 		// in execute when we have a P.
 		_g_.sysexitseq, _g_.sysexitticks = tracestamp()
-	}
+	}*/
 
 	_g_.m.locks--
 
@@ -2479,7 +2479,7 @@ func exitsyscallfast() bool {
 		_g_.m.mcache = _g_.m.p.ptr().mcache
 		_g_.m.p.ptr().m.set(_g_.m)
 		if _g_.m.syscalltick != _g_.m.p.ptr().syscalltick {
-			if trace.enabled {
+			/*if trace.enabled {
 				// The p was retaken and then enter into syscall again (since _g_.m.syscalltick has changed).
 				// traceGoSysBlock for this syscall was already emitted,
 				// but here we effectively retake the p from the new syscall running on the same p.
@@ -2489,21 +2489,21 @@ func exitsyscallfast() bool {
 					// Denote completion of the current syscall.
 					traceGoSysExit(tracestamp())
 				})
-			}
+			}*/
 			_g_.m.p.ptr().syscalltick++
 		}
 		return true
 	}
 
 	// Try to get any other idle P.
-	oldp := _g_.m.p.ptr()
+	//oldp := _g_.m.p.ptr()
 	_g_.m.mcache = nil
 	_g_.m.p = 0
 	if sched.pidle != 0 {
 		var ok bool
 		systemstack(func() {
 			ok = exitsyscallfast_pidle()
-			if ok && trace.enabled {
+			/*if ok && trace.enabled {
 				if oldp != nil {
 					// Wait till traceGoSysBlock event is emitted.
 					// This ensures consistency of the trace (the goroutine is started after it is blocked).
@@ -2512,7 +2512,7 @@ func exitsyscallfast() bool {
 					}
 				}
 				traceGoSysExit(tracestamp())
-			}
+			}*/
 		})
 		if ok {
 			return true
@@ -2712,12 +2712,12 @@ func newproc1(fn *funcval, argp *uint8, narg int32, nret int32, callerpc uintptr
 	}
 	newg.goid = int64(_p_.goidcache)
 	_p_.goidcache++
-	if raceenabled {
+	/*if raceenabled {
 		newg.racectx = racegostart(callerpc)
-	}
-	if trace.enabled {
+	}*/
+	/*if trace.enabled {
 		traceGoCreate(newg, newg.startpc)
-	}
+	}*/
 	runqput(_p_, newg, true)
 
 	if atomic.Load(&sched.npidle) != 0 && atomic.Load(&sched.nmspinning) == 0 && unsafe.Pointer(fn.fn) != unsafe.Pointer(funcPC(main)) { // TODO: fast atomic
@@ -2799,12 +2799,12 @@ retry:
 			gp.stackguard0 = gp.stack.lo + _StackGuard
 			gp.stackAlloc = _FixedStack
 		} else {
-			if raceenabled {
+			/*if raceenabled {
 				racemalloc(unsafe.Pointer(gp.stack.lo), gp.stackAlloc)
-			}
-			if msanenabled {
+			}*/
+			/*if msanenabled {
 				msanmalloc(unsafe.Pointer(gp.stack.lo), gp.stackAlloc)
-			}
+			}*/
 		}
 	}
 	return gp
@@ -3137,9 +3137,9 @@ func procresize(nprocs int32) *p {
 	if old < 0 || old > _MaxGomaxprocs || nprocs <= 0 || nprocs > _MaxGomaxprocs {
 		throw("procresize: invalid arg")
 	}
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGomaxprocs(nprocs)
-	}
+	}*/
 
 	// update statistics
 	now := nanotime()
@@ -3176,14 +3176,14 @@ func procresize(nprocs int32) *p {
 	// free unused P's
 	for i := nprocs; i < old; i++ {
 		p := allp[i]
-		if trace.enabled {
+		/*if trace.enabled {
 			if p == getg().m.p.ptr() {
 				// moving to p[0], pretend that we were descheduled
 				// and then scheduled again to keep the trace sane.
 				traceGoSched()
 				traceProcStop(p)
 			}
-		}
+		}*/
 		// move all runnable goroutines to the global queue
 		for p.runqhead != p.runqtail {
 			// pop from tail of local queue
@@ -3200,9 +3200,9 @@ func procresize(nprocs int32) *p {
 		// it on the global queue so it can clean itself up
 		if gp := p.gcBgMarkWorker.ptr(); gp != nil {
 			casgstatus(gp, _Gwaiting, _Grunnable)
-			if trace.enabled {
+			/*if trace.enabled {
 				traceGoUnpark(gp, 0)
-			}
+			}*/
 			globrunqput(gp)
 			// This assignment doesn't race because the
 			// world is stopped.
@@ -3241,9 +3241,9 @@ func procresize(nprocs int32) *p {
 		p.m = 0
 		p.status = _Pidle
 		acquirep(p)
-		if trace.enabled {
+		/*if trace.enabled {
 			traceGoStart()
-		}
+		}*/
 	}
 	var runnablePs *p
 	for i := nprocs - 1; i >= 0; i-- {
@@ -3273,9 +3273,9 @@ func acquirep(_p_ *p) {
 	_g_ := getg()
 	_g_.m.mcache = _p_.mcache
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceProcStart()
-	}
+	}*/
 }
 
 // May run during STW, so write barriers are not allowed.
@@ -3311,9 +3311,9 @@ func releasep() *p {
 		print("releasep: m=", _g_.m, " m->p=", _g_.m.p.ptr(), " p->m=", _p_.m, " m->mcache=", _g_.m.mcache, " p->mcache=", _p_.mcache, " p->status=", _p_.status, "\n")
 		throw("releasep: invalid p state")
 	}
-	if trace.enabled {
+	/*if trace.enabled {
 		traceProcStop(_g_.m.p.ptr())
-	}
+	}*/
 	_g_.m.p = 0
 	_g_.m.mcache = nil
 	_p_.m = 0
@@ -3552,10 +3552,10 @@ func retake(now int64) uint32 {
 			// increment nmidle and report deadlock.
 			incidlelocked(-1)
 			if atomic.Cas(&_p_.status, s, _Pidle) {
-				if trace.enabled {
+				/*if trace.enabled {
 					traceGoSysBlock(_p_)
 					traceProcStop(_p_)
-				}
+				}*/
 				n++
 				_p_.syscalltick++
 				handoffp(_p_)
@@ -3854,7 +3854,7 @@ func runqempty(_p_ *p) bool {
 // With the randomness here, as long as the tests pass
 // consistently with -race, they shouldn't have latent scheduling
 // assumptions.
-const randomizeScheduler = raceenabled
+const randomizeScheduler = false
 
 // runqput tries to put g on the local runnable queue.
 // If next if false, runqput adds g to the tail of the runnable queue.

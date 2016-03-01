@@ -95,9 +95,9 @@ func cgocall(fn, arg unsafe.Pointer) int32 {
 		throw("cgocall nil")
 	}
 
-	if raceenabled {
+	/*if raceenabled {
 		racereleasemerge(unsafe.Pointer(&racecgosync))
-	}
+	}*/
 
 	/*
 	 * Lock g to m to ensure we stay on the same stack if we do a
@@ -131,9 +131,9 @@ func cgocall(fn, arg unsafe.Pointer) int32 {
 func endcgo(mp *m) {
 	mp.ncgo--
 
-	if raceenabled {
+	/*if raceenabled {
 		raceacquire(unsafe.Pointer(&racecgosync))
-	}
+	}*/
 
 	unlockOSThread() // invalidates mp
 }
@@ -203,9 +203,9 @@ func cgocallbackg1() {
 	restore := true
 	defer unwindm(&restore)
 
-	if raceenabled {
+	/*if raceenabled {
 		raceacquire(unsafe.Pointer(&racecgosync))
-	}
+	}*/
 
 	type args struct {
 		fn      *funcval
@@ -266,16 +266,16 @@ func cgocallbackg1() {
 	// would be a no-op.
 	reflectcall(nil, unsafe.Pointer(cb.fn), unsafe.Pointer(cb.arg), uint32(cb.argsize), 0)
 
-	if raceenabled {
+	/*if raceenabled {
 		racereleasemerge(unsafe.Pointer(&racecgosync))
-	}
-	if msanenabled {
+	}*/
+	/*if msanenabled {
 		// Tell msan that we wrote to the entire argument block.
 		// This tells msan that we set the results.
 		// Since we have already called the function it doesn't
 		// matter that we are writing to the non-result parameters.
 		msanwrite(cb.arg, cb.argsize)
-	}
+	}*/
 
 	// Do not unwind m->g0->sched.sp.
 	// Our caller, cgocallback, will do that.

@@ -12,7 +12,7 @@ import (
 	"unsafe"
 )
 
-const raceenabled = false
+//const raceenabled = false
 
 // Because raceenabled is false, none of these functions should be called.
 

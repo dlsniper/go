@@ -12,7 +12,7 @@ import (
 	"unsafe"
 )
 
-const msanenabled = false
+//const msanenabled = false
 
 // Because msanenabled is false, none of these functions should be called.
 

@@ -107,10 +107,10 @@ havespan:
 		reimburseSweepCredit(usedBytes)
 	}
 	atomic.Xadd64(&memstats.heap_live, int64(spanBytes)-int64(usedBytes))
-	if trace.enabled {
+	/*if trace.enabled {
 		// heap_live changed.
 		traceHeapAlloc()
-	}
+	}*/
 	if gcBlackenEnabled != 0 {
 		// heap_live changed.
 		gcController.revise()

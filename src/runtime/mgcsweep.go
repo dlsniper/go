@@ -176,9 +176,9 @@ func (s *mspan) sweep(preserve bool) bool {
 		throw("MSpan_Sweep: bad span state")
 	}
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGCSweepStart()
-	}
+	}*/
 
 	atomic.Xadd64(&mheap_.pagesSwept, int64(s.npages))
 
@@ -266,9 +266,9 @@ func (s *mspan) sweep(preserve bool) bool {
 		if debug.allocfreetrace != 0 {
 			tracefree(unsafe.Pointer(p), size)
 		}
-		if msanenabled {
+		/*if msanenabled {
 			msanfree(unsafe.Pointer(p), size)
-		}
+		}*/
 
 		// Reset to allocated+noscan.
 		if cl == 0 {
@@ -344,9 +344,9 @@ func (s *mspan) sweep(preserve bool) bool {
 		c.local_largefree += size
 		res = true
 	}
-	if trace.enabled {
+	/*if trace.enabled {
 		traceGCSweepDone()
-	}
+	}*/
 	return res
 }
 

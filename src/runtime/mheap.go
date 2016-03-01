@@ -476,9 +476,9 @@ func (h *mheap) alloc_m(npage uintptr, sizeclass int32, large bool) *mspan {
 		gcController.revise()
 	}
 
-	if trace.enabled {
+	/*if trace.enabled {
 		traceHeapAlloc()
-	}
+	}*/
 
 	// h_spans is accessed concurrently without synchronization
 	// from other threads. Hence, there must be a store/store

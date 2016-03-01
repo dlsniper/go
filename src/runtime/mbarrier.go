@@ -250,16 +250,16 @@ func typedslicecopy(typ *_type, dst, src slice) int {
 	dstp := unsafe.Pointer(dst.array)
 	srcp := unsafe.Pointer(src.array)
 
-	if raceenabled {
+	/*if raceenabled {
 		callerpc := getcallerpc(unsafe.Pointer(&typ))
 		pc := funcPC(slicecopy)
 		racewriterangepc(dstp, uintptr(n)*typ.size, callerpc, pc)
 		racereadrangepc(srcp, uintptr(n)*typ.size, callerpc, pc)
-	}
-	if msanenabled {
+	}*/
+	/*if msanenabled {
 		msanwrite(dstp, uintptr(n)*typ.size)
 		msanread(srcp, uintptr(n)*typ.size)
-	}
+	}*/
 
 	if writeBarrier.cgo {
 		cgoCheckSliceCopy(typ, dst, src, n)

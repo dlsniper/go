@@ -394,12 +394,12 @@ func stackalloc(n uint32) (stack, []stkbar) {
 		v = unsafe.Pointer(s.start << _PageShift)
 	}
 
-	if raceenabled {
+	/*if raceenabled {
 		racemalloc(v, uintptr(n))
-	}
-	if msanenabled {
+	}*/
+	/*if msanenabled {
 		msanmalloc(v, uintptr(n))
-	}
+	}*/
 	if stackDebug >= 1 {
 		print("  allocated ", v, "\n")
 	}
@@ -429,9 +429,9 @@ func stackfree(stk stack, n uintptr) {
 		}
 		return
 	}
-	if msanenabled {
+	/*if msanenabled {
 		msanfree(v, n)
-	}
+	}*/
 	if stackCache != 0 && n < _FixedStack<<_NumStackOrders && n < _StackCacheSize {
 		order := uint8(0)
 		n2 := n
