@@ -90,6 +90,8 @@ const (
 	traceFutileWakeup byte = 128
 )
 
+const traceEnabled = false
+
 // trace is global tracing context.
 var trace struct {
 	lock          mutex       // protects the following members
@@ -175,13 +177,13 @@ func StartTrace() error {
 	stopTheWorld("start tracing")
 
 	// We are in stop-the-world, but syscalls can finish and write to trace concurrently.
-	// Exitsyscall could check trace.enabled long before and then suddenly wake up
+	// Exitsyscall could check traceEnabled long before and then suddenly wake up
 	// and decide to write to trace at a random point in time.
 	// However, such syscall will use the global trace.buf buffer, because we've
 	// acquired all p's by doing stop-the-world. So this protects us from such races.
 	lock(&trace.bufLock)
 
-	if trace.enabled || trace.shutdown {
+	if traceEnabled || trace.shutdown {
 		unlock(&trace.bufLock)
 		startTheWorld()
 		return errorString("tracing is already enabled")
@@ -192,13 +194,13 @@ func StartTrace() error {
 	trace.headerWritten = false
 	trace.footerWritten = false
 
-	// Can't set trace.enabled yet. While the world is stopped, exitsyscall could
-	// already emit a delayed event (see exitTicks in exitsyscall) if we set trace.enabled here.
+	// Can't set traceEnabled yet. While the world is stopped, exitsyscall could
+	// already emit a delayed event (see exitTicks in exitsyscall) if we set traceEnabled here.
 	// That would lead to an inconsistent trace:
 	// - either GoSysExit appears before EvGoInSyscall,
 	// - or GoSysExit appears for a goroutine for which we don't emit EvGoInSyscall below.
 	// To instruct traceEvent that it must not ignore events below, we set startingtrace.
-	// trace.enabled is set afterwards once we have emitted all preliminary events.
+	// traceEnabled is set afterwards once we have emitted all preliminary events.
 	_g_ := getg()
 	_g_.m.startingtrace = true
 	for _, gp := range allgs {
@@ -218,7 +220,7 @@ func StartTrace() error {
 	traceProcStart()
 	traceGoStart()
 	_g_.m.startingtrace = false
-	trace.enabled = true
+	//traceEnabled = true
 
 	unlock(&trace.bufLock)
 
@@ -236,7 +238,7 @@ func StopTrace() {
 	// See the comment in StartTrace.
 	lock(&trace.bufLock)
 
-	if !trace.enabled {
+	if !traceEnabled {
 		unlock(&trace.bufLock)
 		startTheWorld()
 		return
@@ -270,7 +272,7 @@ func StopTrace() {
 		osyield()
 	}
 
-	trace.enabled = false
+	//traceEnabled = false
 	trace.shutdown = true
 	trace.stackTab.dump()
 
@@ -392,7 +394,7 @@ func ReadTrace() []byte {
 			// race reports on writer passed to trace.Start.
 			racerelease(unsafe.Pointer(&trace.shutdownSema))
 		}
-		// trace.enabled is already reset, so can call traceable functions.
+		// traceEnabled is already reset, so can call traceable functions.
 		semrelease(&trace.shutdownSema)
 		return nil
 	}
@@ -463,16 +465,16 @@ func traceFullDequeue() traceBufPtr {
 // to collect and remember it for this particular call.
 func traceEvent(ev byte, skip int, args ...uint64) {
 	mp, pid, bufp := traceAcquireBuffer()
-	// Double-check trace.enabled now that we've done m.locks++ and acquired bufLock.
+	// Double-check traceEnabled now that we've done m.locks++ and acquired bufLock.
 	// This protects from races between traceEvent and StartTrace/StopTrace.
 
-	// The caller checked that trace.enabled == true, but trace.enabled might have been
+	// The caller checked that traceEnabled == true, but traceEnabled might have been
 	// turned off between the check and now. Check again. traceLockBuffer did mp.locks++,
 	// StopTrace does stopTheWorld, and stopTheWorld waits for mp.locks to go back to zero,
-	// so if we see trace.enabled == true now, we know it's true for the rest of the function.
+	// so if we see traceEnabled == true now, we know it's true for the rest of the function.
 	// Exitsyscall can run even during stopTheWorld. The race with StartTrace/StopTrace
 	// during tracing in exitsyscall is resolved by locking trace.bufLock in traceLockBuffer.
-	if !trace.enabled && !mp.startingtrace {
+	if !traceEnabled && !mp.startingtrace {
 		traceReleaseBuffer(pid)
 		return
 	}

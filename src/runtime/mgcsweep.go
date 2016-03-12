@@ -176,7 +176,7 @@ func (s *mspan) sweep(preserve bool) bool {
 		throw("MSpan_Sweep: bad span state")
 	}
 
-	if trace.enabled {
+	if traceEnabled {
 		traceGCSweepStart()
 	}
 
@@ -344,7 +344,7 @@ func (s *mspan) sweep(preserve bool) bool {
 		c.local_largefree += size
 		res = true
 	}
-	if trace.enabled {
+	if traceEnabled {
 		traceGCSweepDone()
 	}
 	return res

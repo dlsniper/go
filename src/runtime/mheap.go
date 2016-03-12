@@ -476,7 +476,7 @@ func (h *mheap) alloc_m(npage uintptr, sizeclass int32, large bool) *mspan {
 		gcController.revise()
 	}
 
-	if trace.enabled {
+	if traceEnabled {
 		traceHeapAlloc()
 	}
 

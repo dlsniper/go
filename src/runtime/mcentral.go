@@ -107,7 +107,7 @@ havespan:
 		reimburseSweepCredit(usedBytes)
 	}
 	atomic.Xadd64(&memstats.heap_live, int64(spanBytes)-int64(usedBytes))
-	if trace.enabled {
+	if traceEnabled {
 		// heap_live changed.
 		traceHeapAlloc()
 	}
