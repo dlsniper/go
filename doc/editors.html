@@ -102,16 +102,16 @@ The following feature matrix lists and compares the most significant features.
   <tr>
     <td>Autofill structures</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>Generate getters and setters for structure field</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>In-editor quick-fixes<sup>5</sup></td>
@@ -122,7 +122,7 @@ The following feature matrix lists and compares the most significant features.
   </tr>
   <tr>
     <td>On-the-fly code analysis</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
@@ -160,24 +160,24 @@ The following feature matrix lists and compares the most significant features.
   </tr>
   <tr>
     <td>Implement interface on type</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>Extract variable, constant, and function refactorings</td>
-    <td class="no">No</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>Inline variable, and constant refactorings</td>
-    <td class="no">No</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td class="feature-row" colspan="5">Navigation features</td>
@@ -212,17 +212,17 @@ The following feature matrix lists and compares the most significant features.
   </tr>
   <tr>
     <td>Look up for method implementations</td>
-    <td class="no">No</td>
-    <td class="no">Yes</td>
+    <td class="unknown">Unknown</td>
+    <td class="unknown">Yes</td>
     <td class="yes">Yes</td>
-    <td class="no">Yes</td>
+    <td class="unknown">Yes</td>
   </tr>
   <tr>
     <td>Look up for implemented interfaces</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>Search for callers and callees</td>
@@ -233,52 +233,52 @@ The following feature matrix lists and compares the most significant features.
   </tr>
   <tr>
     <td>Type hierarchy support</td>
-    <td class="no">No</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>Call hierarchy support</td>
-    <td class="no">No</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td class="feature-row" colspan="5">Testing and debugging features</td>
   </tr>
   <tr>
     <td>Debugger support</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes<sup>3</sup></td>
   </tr>
   <tr>
     <td>Inline debugger display</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>Run a single test case, all tests from file, or all tests from a package</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>Auto generate tests for packages, files and identifiers</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr>
     <td>Debug tests</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes<sup>3</sup></td>
@@ -292,10 +292,10 @@ The following feature matrix lists and compares the most significant features.
   </tr>
   <tr>
     <td>Debugger symbol evaluation</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
     <td class="yes">Yes</td>
     <td class="yes">Yes</td>
-    <td class="no">No</td>
+    <td class="unknown">Unknown</td>
   </tr>
   <tr class="download">
     <td></td>
@@ -344,6 +344,10 @@ The following feature matrix lists and compares the most significant features.
 .features-matrix .no {
   text-align: center;
   background-color: #ffe9e9;
+}
+.features-matrix .unknown {
+  text-align: center;
+  background-color: #fafaac;
 }
 .features-matrix .download {
   font-weight: bold;
