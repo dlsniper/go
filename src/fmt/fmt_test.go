@@ -1467,7 +1467,7 @@ func (flagPrinter) Format(f State, c rune) {
 		s += Sprintf(".%d", p)
 	}
 	s += string(c)
-	io.WriteString(f, "["+s+"]")
+	_, _ = io.WriteString(f, "["+s+"]")
 }
 
 var flagtests = []struct {
